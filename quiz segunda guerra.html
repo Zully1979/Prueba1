@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia: Segunda Guerra Mundial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        .question { font-size: 20px; margin-bottom: 20px; }
+        .options { list-style: none; padding: 0; }
+        .option { background: #f4f4f4; padding: 10px; margin: 5px 0; cursor: pointer; border-radius: 5px; }
+        .correct { background: #28a745 !important; color: white; }
+        .incorrect { background: #dc3545 !important; color: white; }
+        .hidden { display: none; }
+        .feedback { font-size: 18px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Trivia: Segunda Guerra Mundial</h1>
+        <div id="quiz">
+            <p class="question" id="question"></p>
+            <ul class="options" id="options"></ul>
+            <button id="next" class="hidden" onclick="nextQuestion()">Siguiente</button>
+        </div>
+        <div id="result" class="hidden">
+            <h2>Resultados</h2>
+            <p id="score"></p>
+            <p id="feedback" class="feedback"></p>
+        </div>
+    </div>
+    
+    <script>
+        const questions = [
+            { q: "¿En qué año comenzó la Segunda Guerra Mundial?", a: ["1936", "1939", "1941", "1945"], correct: 1 },
+            { q: "¿Qué país fue invadido por Alemania para iniciar la guerra?", a: ["Francia", "Polonia", "Rusia", "Italia"], correct: 1 },
+            { q: "¿Quién era el líder de la Alemania nazi?", a: ["Josef Stalin", "Benito Mussolini", "Adolf Hitler", "Winston Churchill"], correct: 2 },
+            { q: "¿En qué año terminó la Segunda Guerra Mundial?", a: ["1942", "1944", "1945", "1947"], correct: 2 },
+            { q: "¿Qué ciudad japonesa fue bombardeada primero con una bomba atómica?", a: ["Tokio", "Hiroshima", "Nagasaki", "Osaka"], correct: 1 },
+            { q: "¿Qué evento llevó a EE.UU. a entrar en la guerra?", a: ["Batalla de Normandía", "Bombardeo de Pearl Harbor", "Invasión de Polonia", "Guerra Civil Española"], correct: 1 },
+            { q: "¿Cuál fue el principal campo de concentración nazi?", a: ["Dachau", "Auschwitz", "Buchenwald", "Treblinka"], correct: 1 },
+            { q: "¿Qué líder británico dirigió el Reino Unido durante la guerra?", a: ["Neville Chamberlain", "Winston Churchill", "Margaret Thatcher", "Tony Blair"], correct: 1 },
+            { q: "¿Qué conferencia dividió Alemania después de la guerra?", a: ["Yalta", "Versalles", "Potsdam", "Ginebra"], correct: 0 },
+            { q: "¿Qué país formó parte de los Aliados?", a: ["Japón", "Italia", "Alemania", "Francia"], correct: 3 }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        
+        function loadQuestion() {
+            document.getElementById("next").classList.add("hidden");
+            const q = questions[currentQuestion];
+            document.getElementById("question").textContent = q.q;
+            const optionsEl = document.getElementById("options");
+            optionsEl.innerHTML = "";
+            q.a.forEach((option, index) => {
+                const li = document.createElement("li");
+                li.textContent = option;
+                li.classList.add("option");
+                li.onclick = () => selectAnswer(li, index);
+                optionsEl.appendChild(li);
+            });
+        }
+        
+        function selectAnswer(element, index) {
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll(".option");
+            options.forEach(opt => opt.onclick = null);
+            if (index === q.correct) {
+                element.classList.add("correct");
+                score++;
+            } else {
+                element.classList.add("incorrect");
+                options[q.correct].classList.add("correct");
+            }
+            document.getElementById("next").classList.remove("hidden");
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+        
+        function showResults() {
+            document.getElementById("quiz").classList.add("hidden");
+            document.getElementById("result").classList.remove("hidden");
+            document.getElementById("score").textContent = `Puntaje: ${score} / ${questions.length}`;
+            let feedback = "";
+            if (score === 10) feedback = "¡Excelente! Conoces muy bien la Segunda Guerra Mundial.";
+            else if (score >= 7) feedback = "¡Muy bien! Tienes buenos conocimientos.";
+            else if (score >= 4) feedback = "Bien, pero puedes mejorar.";
+            else feedback = "Necesitas estudiar más sobre el tema.";
+            document.getElementById("feedback").textContent = feedback;
+        }
+        
+        loadQuestion();
+    </script>
+</body>
+</html>
